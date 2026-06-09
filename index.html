@@ -1303,10 +1303,10 @@ tr.earn td:first-child{border-left:3px solid var(--pink)}
             <th>#</th><th>Symbol</th><th>Sector</th><th>Index</th>
             <th>Triggers</th><th>Wins</th><th>WR%</th>
             <th>Avg Win%</th><th>Avg Loss%</th><th>Expectancy</th>
-            <th>Last trigger</th><th>Trend</th><th>Action</th>
+            <th>Last trigger</th><th>Trend</th><th>CMP ₹</th><th>Signal / Order</th><th>Chart</th>
           </tr>
         </thead>
-        <tbody id="auBody"><tr><td colspan="13" class="empty">Load CSV data then click Refresh to build the Alpha Universe</td></tr></tbody>
+        <tbody id="auBody"><tr><td colspan="15" class="empty">Load CSV data then click Refresh to build the Alpha Universe</td></tr></tbody>
       </table>
     </div>
     <div style="font-family:var(--mono);font-size:7px;color:var(--text3);padding:8px 0 2px">
@@ -9410,6 +9410,28 @@ function renderAlphaUniverse() {
     const sigBadge = u.is_signal
       ? '<span style="font-size:7px;background:rgba(5,150,105,.15);color:var(--bull);border-radius:3px;padding:1px 5px">Signal</span>'
       : '';
+
+    /* Live CMP from Kite */
+    const cmp     = zdPrices[u.sym] || zdPrices['NSE:'+u.sym] || 0;
+    const cmpCell = cmp
+      ? `<span style="font-family:var(--mono);font-weight:700;color:var(--bright)">₹${cmp.toFixed(2)}</span>`
+      : `<span style="color:var(--text3);font-size:8px">—</span>`;
+
+    /* Signal direction from allSignals */
+    const sig     = allSignals.find(s => s.symbol === u.sym);
+    const isBuy   = sig && sig.signal && sig.signal.startsWith('B');
+    const isSell  = sig && sig.signal && sig.signal.startsWith('S');
+    const sigDir  = isBuy ? 'BUY' : isSell ? 'SELL' : null;
+    const sigLabel= sig ? sig.signal : '—';
+    const sigClr  = isBuy ? 'var(--bull)' : isSell ? 'var(--bear)' : 'var(--text3)';
+    const orderBtn= sigDir
+      ? `<button onclick="showOrderModal('${u.sym}','${sigDir}',${cmp||sig.entry_price||0},0,0)"
+           style="font-family:var(--mono);font-size:7px;background:${isBuy?'var(--bull)':'var(--bear)'};
+                  color:#fff;border:none;border-radius:3px;padding:2px 7px;cursor:pointer;font-weight:700;margin-left:4px">
+           ${isBuy?'▲ BUY':'▼ SELL'}
+         </button>`
+      : '';
+
     return `<tr>
       <td style="color:var(--text3);font-family:var(--mono)">${i+1}</td>
       <td><strong style="font-family:var(--mono)">${u.sym}</strong> ${sigBadge}</td>
@@ -9423,10 +9445,18 @@ function renderAlphaUniverse() {
       <td style="font-family:var(--mono);text-align:center;color:${expColor}">${u.exp>0?'+':''}${u.exp}%</td>
       <td style="font-size:8px;color:var(--text3)">${u.lastTrig}</td>
       <td style="text-align:center">${trendArrow}</td>
-      <td>
+      <td style="text-align:center">${cmpCell}</td>
+      <td style="text-align:center;white-space:nowrap">
+        <span style="font-family:var(--mono);font-size:8px;font-weight:700;color:${sigClr}">${sigLabel}</span>
+        ${orderBtn}
+      </td>
+      <td style="text-align:center;white-space:nowrap">
         <button onclick="vOpenAnyChart('${u.sym}')"
           style="font-family:var(--mono);font-size:7px;background:var(--bg3);border:1px solid var(--border);
                  color:var(--amber);border-radius:3px;padding:1px 6px;cursor:pointer">📊</button>
+        <a href="https://www.tradingview.com/chart/?symbol=NSE:${u.sym}" target="_blank"
+          style="font-family:var(--mono);font-size:7px;background:var(--kite);color:#fff;
+                 border-radius:3px;padding:1px 5px;text-decoration:none;margin-left:3px">TV</a>
       </td>
     </tr>`;
   }).join('');
@@ -10397,120 +10427,84 @@ function optTabRefresh() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// NFO INSTRUMENTS CACHE + FETCHER
+// NFO SYMBOL CONSTRUCTION — no instruments dump needed
+// Constructs Kite NFO tradingsymbols mathematically
+// Format: NIFTY + DDMMMYY + STRIKE + CE/PE  e.g. NIFTY26JUN2424500CE
 // ═══════════════════════════════════════════════════════════
-var _nfoInstruments   = null; /* cached after first fetch */
-var _calSpreadRefresh = null; /* interval handle */
+var _nfoInstruments   = true;  /* always "ready" — no dump needed */
+var _calSpreadRefresh = null;
 const NIFTY_LOT = 65;
 
-async function fetchNFOInstruments() {
-  if (_nfoInstruments) return _nfoInstruments;
-  try {
-    /* Try worker proxy first, fall back to direct Kite API */
-    const urls = [
-      `${ZD_WORKER}/kite/instruments/NFO`,
-      `https://api.kite.trade/instruments/NFO`
-    ];
-    let text = null;
-    for (const url of urls) {
-      try {
-        const res = await fetch(url, {
-          headers: { 'X-Kite-Version':'3', 'Authorization':`token ${zdApiKey}:${zdToken}` }
-        });
-        if (res.ok) { text = await res.text(); break; }
-      } catch(e) { continue; }
-    }
-    if (!text) throw new Error('Could not fetch NFO instruments from any endpoint');
-    /* Parse CSV — columns: instrument_token,exchange_token,tradingsymbol,name,last_price,
-       expiry,strike,tick_size,lot_size,instrument_type,segment,exchange */
-    const lines = text.trim().split('\n');
-    const hdr   = lines[0].split(',');
-    const idxTok  = hdr.indexOf('instrument_token');
-    const idxSym  = hdr.indexOf('tradingsymbol');
-    const idxName = hdr.indexOf('name');
-    const idxExp  = hdr.indexOf('expiry');
-    const idxStr  = hdr.indexOf('strike');
-    const idxType = hdr.indexOf('instrument_type');
-    const idxLot  = hdr.indexOf('lot_size');
+const NFO_MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
-    /* Keep only NIFTY options (name === 'NIFTY', type CE or PE) */
-    _nfoInstruments = lines.slice(1)
-      .map(l => { const c = l.split(',');
-        return { token: c[idxTok], sym: c[idxSym], name: c[idxName],
-                 expiry: c[idxExp], strike: parseFloat(c[idxStr]),
-                 type: c[idxType], lot: parseInt(c[idxLot])||75 }; })
-      .filter(r => r.name === 'NIFTY' && (r.type === 'CE' || r.type === 'PE') && r.strike > 0);
-
-    return _nfoInstruments;
-  } catch(e) {
-    console.error('[NFO]', e);
-    return null;
-  }
+function nfoSym(expDate, strike, type) {
+  /* expDate = 'YYYY-MM-DD', strike = number, type = 'CE'|'PE' */
+  const d   = new Date(expDate);
+  const dd  = String(d.getDate()).padStart(2,'0');
+  const mon = NFO_MON[d.getMonth()];
+  const yy  = String(d.getFullYear()).slice(2);
+  return `NIFTY${dd}${mon}${yy}${Math.round(strike)}${type}`;
 }
 
-/* Get next two monthly expiries for Nifty from instrument list */
-function getNiftyExpiries(instruments) {
+/* Get next two Tuesday monthly expiries (last Tuesday of each month) */
+function getNiftyExpiries() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const expSet = [...new Set(instruments.map(r => r.expiry))].filter(Boolean).sort();
-  /* Future expiries only */
-  const future = expSet.filter(e => new Date(e) >= today);
-  /* Monthly expiries = last TUESDAY of each month (Nifty new expiry cycle) */
-  const byMonth = {};
-  future.forEach(e => {
-    const d   = new Date(e);
-    if (d.getDay() !== 2) return; /* 2 = Tuesday only */
-    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-    if (!byMonth[key] || new Date(e) > new Date(byMonth[key])) byMonth[key] = e;
-  });
-  const monthlyExpiries = Object.values(byMonth).sort();
-  return {
-    near: monthlyExpiries[0] || null,
-    far:  monthlyExpiries[1] || null
-  };
+  const expiries = [];
+  /* Scan next 120 days for last-Tuesday-of-month expiries */
+  for (let m = 0; m <= 3; m++) {
+    const base = new Date(today.getFullYear(), today.getMonth() + m, 1);
+    const yr   = base.getFullYear();
+    const mo   = base.getMonth();
+    /* Find last Tuesday of this month */
+    const lastDay = new Date(yr, mo+1, 0); /* last day of month */
+    let d = new Date(lastDay);
+    while (d.getDay() !== 2) d.setDate(d.getDate()-1); /* walk back to Tuesday */
+    if (d >= today) expiries.push(d.toISOString().slice(0,10));
+  }
+  /* Return two nearest future expiries */
+  const future = expiries.filter(e => new Date(e) >= today).slice(0,2);
+  return { near: future[0]||null, far: future[1]||null };
 }
 
 function getDTE(expiryStr) {
   if (!expiryStr) return 0;
-  const exp  = new Date(expiryStr); exp.setHours(15,30,0,0);
-  const now  = new Date();
-  return Math.max(0, Math.ceil((exp - now) / (1000*60*60*24)));
+  const exp = new Date(expiryStr); exp.setHours(15,30,0,0);
+  return Math.max(0, Math.ceil((exp - new Date()) / (1000*60*60*24)));
 }
 
-/* Find nearest strike to a target price in the instrument list */
-function nearestStrike(instruments, expiry, type, targetPrice) {
-  const candidates = instruments.filter(r => r.expiry === expiry && r.type === type);
-  if (!candidates.length) return null;
-  return candidates.reduce((best, r) =>
-    Math.abs(r.strike - targetPrice) < Math.abs(best.strike - targetPrice) ? r : best
-  );
+function roundToStrikeNFO(price) {
+  return Math.round(price / 50) * 50;
 }
 
-/* Fetch live quotes for a list of NFO tokens, returns { token: last_price } */
-async function fetchNFOQuotes(tokens) {
+/* Fetch live quotes for NFO symbols via existing worker /kite/quote */
+async function fetchNFOQuotes(syms) {
   const prices = {};
-  if (!tokens.length) return prices;
-  /* Kite quote API accepts instrument_token as i=NFO:TOKEN */
+  if (!syms.length) return prices;
   const chunks = [];
-  for (let i = 0; i < tokens.length; i += 10) chunks.push(tokens.slice(i, i+10));
+  for (let i = 0; i < syms.length; i += 10) chunks.push(syms.slice(i, i+10));
   for (const chunk of chunks) {
     try {
-      /* Use tradingsymbol format NFO:SYMBOL — more reliable than token */
-      const params = chunk.map(t => 'i=' + encodeURIComponent('NFO:' + t)).join('&');
+      const params = chunk.map(s => 'i=' + encodeURIComponent('NFO:' + s)).join('&');
       const res = await fetch(`${ZD_WORKER}/kite/quote?${params}`, {
         headers: { 'X-Kite-Version':'3', 'Authorization':`token ${zdApiKey}:${zdToken}` }
       });
-      if (!res.ok) continue;
+      if (!res.ok) { console.warn('[NFOQuote] HTTP', res.status); continue; }
       const j = await res.json();
       if (j.data) {
         Object.entries(j.data).forEach(([k, v]) => {
-          const sym = k.split(':')[1] || k;
+          const sym = k.replace('NFO:','');
           prices[sym] = v.last_price || 0;
         });
+      } else if (j.error_type) {
+        console.warn('[NFOQuote]', j.message);
       }
     } catch(e) { console.error('[NFOQuote]', e); }
   }
   return prices;
 }
+
+/* fetchNFOInstruments kept as no-op — symbol construction replaces it */
+async function fetchNFOInstruments() { return true; }
 
 // ═══════════════════════════════════════════════════════════
 // CALENDAR SPREAD — POSITION STORE (survives re-renders)
@@ -10705,14 +10699,6 @@ async function renderCalendarSpread() {
     return;
   }
 
-  wrap.innerHTML = '<div style="color:var(--text3);padding:12px"><i class="fas fa-spinner fa-spin"></i> Fetching NFO instruments…</div>';
-
-  const instruments = await fetchNFOInstruments();
-  if (!instruments || !instruments.length) {
-    wrap.innerHTML = '<div style="color:var(--bear);padding:12px">✗ Could not fetch NFO instruments. Check Kite connection.</div>';
-    return;
-  }
-
   wrap.innerHTML = '<div style="color:var(--text3);padding:12px"><i class="fas fa-spinner fa-spin"></i> Fetching live option premiums…</div>';
 
   const niftyLTP = getNiftyLTP();
@@ -10722,31 +10708,32 @@ async function renderCalendarSpread() {
     return;
   }
 
-  const { near, far } = getNiftyExpiries(instruments);
+  const { near, far } = getNiftyExpiries();
   if (!near || !far) {
-    wrap.innerHTML = '<div style="color:var(--bear);padding:12px">✗ Could not identify two Tuesday expiries from NFO data.</div>';
+    wrap.innerHTML = '<div style="color:var(--bear);padding:12px">✗ Could not determine Tuesday expiry dates.</div>';
     return;
   }
 
   const nearDTE = getDTE(near);
   const farDTE  = getDTE(far);
-  const atm     = roundToStrike(niftyLTP, 'nearest');
-  const atr1    = atr ? Math.round(atr) : 150;
-  const strikeUp = roundToStrike(niftyLTP + atr1, 'up');
-  const strikeDn = roundToStrike(niftyLTP - atr1, 'down');
+  const atm     = roundToStrikeNFO(niftyLTP);
+  const atr1    = atr ? Math.round(atr / 50) * 50 : 150;
+  const strikeUp = roundToStrikeNFO(niftyLTP + atr1);
+  const strikeDn = roundToStrikeNFO(niftyLTP - atr1);
 
+  /* Build leg definitions with constructed symbols */
   const legDefs = [
     { label:'ATM CE', type:'CE', strike: atm },
     { label:'ATM PE', type:'PE', strike: atm },
     { label:'OTM CE', type:'CE', strike: strikeUp },
     { label:'OTM PE', type:'PE', strike: strikeDn },
-  ];
+  ].map(l => ({
+    ...l,
+    nearInst: { sym: nfoSym(near, l.strike, l.type), strike: l.strike, expiry: near },
+    farInst:  { sym: nfoSym(far,  l.strike, l.type), strike: l.strike, expiry: far  },
+  }));
 
-  const resolved = legDefs.map(l => {
-    const nearInst = nearestStrike(instruments, near, l.type, l.strike);
-    const farInst  = nearestStrike(instruments, far,  l.type, l.strike);
-    return { ...l, nearInst, farInst };
-  }).filter(l => l.nearInst && l.farInst);
+  const resolved = legDefs;
 
   const allSyms = [...new Set(resolved.flatMap(l => [l.nearInst.sym, l.farInst.sym]))];
   const prices  = await fetchNFOQuotes(allSyms);
