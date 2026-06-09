@@ -8117,8 +8117,8 @@ function renderBreakoutStrip() {
     return;
   }
 
-  /* Table view — shared for buy/sell */
-  const data  = _brkView === 'buy' ? buys : sells;
+  /* Table view — shared for buy/sell — newest first */
+  const data  = (_brkView === 'buy' ? buys : sells).slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
   const accent = _brkView === 'buy' ? 'var(--bull)' : 'var(--bear)';
   const icon   = _brkView === 'buy' ? '▲' : '▼';
 
@@ -8143,7 +8143,7 @@ function renderBreakoutStrip() {
             <th style="text-align:center;padding:5px 8px;color:var(--text2)">Breakout Time</th>
             <th style="text-align:center;padding:5px 8px;color:var(--amber)">Source</th>
             ${_auFilterActive ? '<th style="text-align:center;padding:5px 8px;color:var(--bull)">Tier</th>' : ''}
-            <th style="text-align:center;padding:5px 8px;color:var(--text2)">Chart</th>
+            <th style="text-align:center;padding:5px 8px;color:var(--text2)">Order / Chart</th>
           </tr>
         </thead>
         <tbody id="brkTableBody"></tbody>
@@ -8186,7 +8186,10 @@ function renderBreakoutStrip() {
         + '<td style="padding:4px 8px;text-align:center;color:var(--text2);font-size:8px;font-weight:600">' + dateStr + '</td>'
         + '<td style="padding:4px 8px;text-align:center"><span style="font-size:7px;padding:1px 6px;border-radius:3px;background:' + srcBg + ';color:' + srcClr + '">' + (b.is_signal?'Signal':b.source) + '</span></td>'
         + (_auFilterActive ? '<td style="padding:4px 8px;text-align:center">' + tierCell + '</td>' : '')
-        + '<td style="padding:4px 8px;text-align:center">'
+        + '<td style="padding:4px 8px;text-align:center;white-space:nowrap">'
+        + (b.dir==='BUY'
+            ? '<button onclick="showOrderModal(\'' + b.sym + '\',\'BUY\',' + livePx.toFixed(2) + ',0,0)" style="font-family:var(--mono);font-size:7px;background:var(--bull);color:#fff;border:none;border-radius:3px;padding:2px 6px;cursor:pointer;margin-right:3px;font-weight:700">▲ BUY</button>'
+            : '<button onclick="showOrderModal(\'' + b.sym + '\',\'SELL\',' + livePx.toFixed(2) + ',0,0)" style="font-family:var(--mono);font-size:7px;background:var(--bear);color:#fff;border:none;border-radius:3px;padding:2px 6px;cursor:pointer;margin-right:3px;font-weight:700">▼ SELL</button>')
         + '<button onclick="vOpenAnyChart(\'' + b.sym + '\')" style="font-family:var(--mono);font-size:7px;background:var(--amber);color:#000;border:none;border-radius:3px;padding:2px 5px;cursor:pointer;margin-right:3px">📊</button>'
         + '<a href="' + b.tv_url + '" target="_blank" style="font-family:var(--mono);font-size:7px;background:var(--kite);color:#fff;border-radius:3px;padding:2px 5px;text-decoration:none">TV</a>'
         + '</td></tr>';
@@ -10403,11 +10406,21 @@ const NIFTY_LOT = 65;
 async function fetchNFOInstruments() {
   if (_nfoInstruments) return _nfoInstruments;
   try {
-    const res = await fetch(`${ZD_WORKER}/kite/instruments/NFO`, {
-      headers: { 'X-Kite-Version':'3', 'Authorization':`token ${zdApiKey}:${zdToken}` }
-    });
-    if (!res.ok) throw new Error('NFO fetch failed: ' + res.status);
-    const text = await res.text();
+    /* Try worker proxy first, fall back to direct Kite API */
+    const urls = [
+      `${ZD_WORKER}/kite/instruments/NFO`,
+      `https://api.kite.trade/instruments/NFO`
+    ];
+    let text = null;
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, {
+          headers: { 'X-Kite-Version':'3', 'Authorization':`token ${zdApiKey}:${zdToken}` }
+        });
+        if (res.ok) { text = await res.text(); break; }
+      } catch(e) { continue; }
+    }
+    if (!text) throw new Error('Could not fetch NFO instruments from any endpoint');
     /* Parse CSV — columns: instrument_token,exchange_token,tradingsymbol,name,last_price,
        expiry,strike,tick_size,lot_size,instrument_type,segment,exchange */
     const lines = text.trim().split('\n');
