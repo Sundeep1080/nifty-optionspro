@@ -645,6 +645,115 @@ tr.earn td:first-child{border-left:3px solid var(--pink)}
     <!-- Content area — cards or table depending on view -->
     <div id="liveBreakoutContent" style="padding:0 12px 8px"></div>
   </div>
+
+  <!-- ══ PRE-BREAKOUT + BREAKOUT UNIFIED GRID ══ -->
+  <div id="pboBrkGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 8px 0;font-family:var(--mono)">
+
+    <!-- PRE-BREAKOUT BUY -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--amber);border-radius:6px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(217,119,6,.08);flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:800;color:var(--amber)">🎯 Pre-Breakout</span>
+        <span style="font-size:8px;font-weight:700;color:var(--bull)">BUY</span>
+        <span id="pboBuyCount" style="font-size:8px;color:var(--text3)"></span>
+        <span style="font-size:7px;color:var(--text3);margin-left:auto">0–1% from resistance</span>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:9px">
+          <thead><tr style="color:var(--text3);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2)">
+            <th style="padding:3px 6px;text-align:left">#</th>
+            <th style="padding:3px 6px;text-align:left">Symbol</th>
+            <th style="padding:3px 6px">CMP ₹</th>
+            <th style="padding:3px 6px">Level ₹</th>
+            <th style="padding:3px 6px">Type</th>
+            <th style="padding:3px 6px">Away%</th>
+            <th style="padding:3px 6px">Order</th>
+          </tr></thead>
+          <tbody id="pboBuyBody"><tr><td colspan="7" style="padding:12px;text-align:center;color:var(--text3);font-size:8px">Connect Kite — updates every 30s</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PRE-BREAKOUT SELL -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--bear);border-radius:6px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(239,68,68,.08);flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:800;color:var(--bear)">🎯 Pre-Breakout</span>
+        <span style="font-size:8px;font-weight:700;color:var(--bear)">SELL</span>
+        <span id="pboSellCount" style="font-size:8px;color:var(--text3)"></span>
+        <span style="font-size:7px;color:var(--text3);margin-left:auto">0–1% from support</span>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:9px">
+          <thead><tr style="color:var(--text3);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2)">
+            <th style="padding:3px 6px;text-align:left">#</th>
+            <th style="padding:3px 6px;text-align:left">Symbol</th>
+            <th style="padding:3px 6px">CMP ₹</th>
+            <th style="padding:3px 6px">Level ₹</th>
+            <th style="padding:3px 6px">Type</th>
+            <th style="padding:3px 6px">Away%</th>
+            <th style="padding:3px 6px">Order</th>
+          </tr></thead>
+          <tbody id="pboSellBody"><tr><td colspan="7" style="padding:12px;text-align:center;color:var(--text3);font-size:8px">Connect Kite — updates every 30s</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BREAKOUT BUY -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--bull);border-radius:6px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(5,150,105,.08);flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:800;color:var(--bull)">⚡ Breakout</span>
+        <span style="font-size:8px;font-weight:700;color:var(--bull)">BUY</span>
+        <span id="brkBuyCount2" style="font-size:8px;color:var(--text3)"></span>
+        <span style="font-size:7px;color:var(--text3);margin-left:auto">Crossed resistance · Newest first</span>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:9px">
+          <thead><tr style="color:var(--text3);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2)">
+            <th style="padding:3px 6px">#</th>
+            <th style="padding:3px 6px;text-align:left">Symbol</th>
+            <th style="padding:3px 6px">Entry ₹</th>
+            <th style="padding:3px 6px">LTP ₹</th>
+            <th style="padding:3px 6px">Level</th>
+            <th style="padding:3px 6px">Type</th>
+            <th style="padding:3px 6px">%</th>
+            <th style="padding:3px 6px">Time</th>
+            <th style="padding:3px 6px">Status</th>
+            <th style="padding:3px 6px">Order</th>
+          </tr></thead>
+          <tbody id="brkBuyBody2"><tr><td colspan="10" style="padding:12px;text-align:center;color:var(--text3);font-size:8px">No breakouts yet today</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BREAKOUT SELL -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--bear);border-radius:6px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(239,68,68,.08);flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:800;color:var(--bear)">⚡ Breakout</span>
+        <span style="font-size:8px;font-weight:700;color:var(--bear)">SELL</span>
+        <span id="brkSellCount2" style="font-size:8px;color:var(--text3)"></span>
+        <span style="font-size:7px;color:var(--text3);margin-left:auto">Broke support · Newest first</span>
+      </div>
+      <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:9px">
+          <thead><tr style="color:var(--text3);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2)">
+            <th style="padding:3px 6px">#</th>
+            <th style="padding:3px 6px;text-align:left">Symbol</th>
+            <th style="padding:3px 6px">Entry ₹</th>
+            <th style="padding:3px 6px">LTP ₹</th>
+            <th style="padding:3px 6px">Level</th>
+            <th style="padding:3px 6px">Type</th>
+            <th style="padding:3px 6px">%</th>
+            <th style="padding:3px 6px">Time</th>
+            <th style="padding:3px 6px">Status</th>
+            <th style="padding:3px 6px">Order</th>
+          </tr></thead>
+          <tbody id="brkSellBody2"><tr><td colspan="10" style="padding:12px;text-align:center;color:var(--text3);font-size:8px">No breakdowns yet today</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <!-- ══ END PRE-BREAKOUT + BREAKOUT GRID ══ -->
+
   <div class="top25-grid" id="top25Grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
 
     <!-- ── BUY PANEL ── -->
@@ -2293,7 +2402,7 @@ async function processAll(bySymbol){
   saveMeta(Object.assign({},meta,{sessions:sessionCount,lastDate:lastDateVal}));
   setProgress(100,'Done!');
   toast(`${allSignals.length} signals · ${newAdded} new · ${resolved} resolved · Session ${sessionCount}`,'ok');
-  updatePills();populateFilters();populateAnticipationSectors();renderPage1();renderPage2();renderPage3();updateDPFPnL();snapshotFullUniverse();resolveUniverseOutcomes();buildSectorMomentum();buildUnbiasedWRMap();recalibrateWeights();recalibratePBWeights();buildBreakoutLevels();scanCSVBreakouts();buildMonthlyHeatmap();checkRegimeChangeOptions();resolveBreakoutOutcomes();autoRebuildAlphaUniverse();buildNearBreakoutList();
+  updatePills();populateFilters();populateAnticipationSectors();renderPage1();renderPage2();renderPage3();updateDPFPnL();snapshotFullUniverse();resolveUniverseOutcomes();buildSectorMomentum();buildUnbiasedWRMap();recalibrateWeights();recalibratePBWeights();buildBreakoutLevels();scanCSVBreakouts();buildMonthlyHeatmap();checkRegimeChangeOptions();resolveBreakoutOutcomes();autoRebuildAlphaUniverse();buildNearBreakoutList();refreshPBOBrkGrid();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -7936,6 +8045,51 @@ function checkBreakouts() {
     try { localStorage.setItem('brkDebounce_'+today, JSON.stringify(_brkAlerted)); } catch(e) {}
     renderBreakoutStrip();
   }
+
+  /* ── Failed breakout detection ── */
+  /* For every open breakout, check if price has fallen back below its level */
+  liveBreakouts.forEach(b => {
+    if (b.status !== 'open') return;
+    const ltp = zdPrices[b.sym] || zdPrices['NSE:'+b.sym];
+    if (!ltp || ltp <= 0) return;
+
+    const isBuy   = b.dir === 'BUY';
+    const failed  = isBuy ? ltp <= b.level : ltp >= b.level;
+    const wasWeak = b.brkStatus === 'weak';
+
+    if (failed && !b.failed) {
+      /* First time price crosses back — mark as failed */
+      b.failed    = true;
+      b.status    = 'failed';
+      b.brkStatus = 'failed';
+      b.failedAt  = ltp;
+      b.failTime  = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+
+      /* Alert once */
+      const icon = isBuy ? '❌ FAILED BREAKOUT' : '❌ FAILED BREAKDOWN';
+      toast(`${icon}: ${b.sym} fell back ${isBuy?'below':'above'} ₹${b.level.toFixed(1)}`, 'err');
+      playBreakoutSound && playBreakoutSound(!isBuy); /* opposite sound */
+
+      /* Update ledger */
+      saveBrkToLedger(b);
+
+    } else if (!failed) {
+      /* Still above level — compute live status */
+      const distPct = isBuy
+        ? (ltp - b.level) / b.level * 100
+        : (b.level - ltp) / b.level * 100;
+
+      b.brkStatus = distPct < 0.5 ? 'weak' : 'holding';
+
+      /* Warn once when entering weak zone */
+      if (b.brkStatus === 'weak' && !wasWeak) {
+        toast(`⚠ WEAK: ${b.sym} only ${distPct.toFixed(1)}% above breakout level`, 'info');
+      }
+    }
+  });
+
+  /* Always refresh pre-breakout + breakout grid on every tick */
+  refreshPBOBrkGrid();
 }
 
 /* ── Resolve outcomes for historical breakouts from CSV data ── */
@@ -8975,7 +9129,134 @@ function renderBrkOutcomeTable() {
     }
 
     wrap.innerHTML = `
-      <!-- Stats row -->
+      <!-- Self-Learning Intelligence Dashboard -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--kite);border-radius:8px;padding:12px 14px;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:800;color:var(--kite);margin-bottom:10px">🧠 Breakout Intelligence — Self-Learning Model</div>
+
+        ${(()=>{
+          /* ── Build per-level stats from full ledger ── */
+          const levelKeys = ['20D High','20D Low','52W High','10D High','10D Low','Pivot R1','Pivot S1'];
+          const lvlStats  = {};
+
+          levelKeys.forEach(lk => {
+            const subset   = ledger.filter(b => (b.level_type||'') === lk);
+            const resolved = subset.filter(b => b.outcome_5d !== null);
+            if (!resolved.length) { lvlStats[lk] = null; return; }
+
+            const wins     = resolved.filter(b => b.outcome_5d === 'strong' || b.outcome_5d === 'mild').length;
+            const strong   = resolved.filter(b => b.outcome_5d === 'strong').length;
+            const failed   = resolved.filter(b => b.failed).length;
+            const volConf  = resolved.filter(b => b.vol_confirmed);
+            const volWins  = volConf.filter(b => b.outcome_5d === 'strong' || b.outcome_5d === 'mild').length;
+            const avgMove  = parseFloat((resolved.reduce((s,b)=>s+(b.chg_5d||0),0)/resolved.length).toFixed(1));
+            const avgMoveWin = resolved.filter(b=>b.outcome_5d==='strong'||b.outcome_5d==='mild').length
+              ? parseFloat((resolved.filter(b=>b.outcome_5d==='strong'||b.outcome_5d==='mild').reduce((s,b)=>s+(b.chg_5d||0),0)/wins).toFixed(1))
+              : 0;
+            const failRate = Math.round(failed/resolved.length*100);
+            const wr       = Math.round(wins/resolved.length*100);
+            const volWR    = volConf.length ? Math.round(volWins/volConf.length*100) : null;
+
+            /* Recent trend — last 10 vs older */
+            const recent   = resolved.slice(-10);
+            const recentWR = recent.length ? Math.round(recent.filter(b=>b.outcome_5d==='strong'||b.outcome_5d==='mild').length/recent.length*100) : null;
+            const trend    = recentWR !== null && wr > 0
+              ? (recentWR > wr + 10 ? '📈 Improving' : recentWR < wr - 10 ? '📉 Declining' : '➡ Stable')
+              : '—';
+
+            /* Reliability score 0-100 */
+            const reliability = Math.round(
+              wr * 0.4 +
+              (volWR||wr) * 0.2 +
+              (100 - failRate) * 0.25 +
+              Math.min(resolved.length, 20) / 20 * 100 * 0.15
+            );
+
+            lvlStats[lk] = { total: subset.length, resolved: resolved.length,
+              wr, strong, wins, failed, failRate, avgMove, avgMoveWin,
+              volWR, recentWR, trend, reliability };
+          });
+
+          /* ── Render level cards ── */
+          const isBuyLevel  = lk => lk.includes('High') || lk.includes('R1');
+          const cards = levelKeys.map(lk => {
+            const s = lvlStats[lk];
+            const col = isBuyLevel(lk) ? 'var(--bull)' : 'var(--bear)';
+            if (!s) return `
+              <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;min-width:140px;flex:1">
+                <div style="font-size:8px;font-weight:700;color:${col}">${lk}</div>
+                <div style="font-size:7px;color:var(--text3);margin-top:4px">No data yet</div>
+              </div>`;
+
+            const wrClr = s.wr >= 60 ? 'var(--bull)' : s.wr >= 45 ? 'var(--amber)' : 'var(--bear)';
+            const relClr = s.reliability >= 65 ? 'var(--bull)' : s.reliability >= 45 ? 'var(--amber)' : 'var(--bear)';
+            const recBar = s.recentWR !== null
+              ? `<div style="font-size:7px;color:var(--text3)">Recent 10: <span style="color:${s.recentWR>=s.wr?'var(--bull)':'var(--bear)'};font-weight:700">${s.recentWR}%</span> ${s.trend}</div>`
+              : '';
+
+            return `
+              <div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid ${col};border-radius:6px;padding:8px 10px;min-width:140px;flex:1">
+                <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px">
+                  <span style="font-size:8px;font-weight:800;color:${col}">${lk}</span>
+                  <span style="font-size:7px;background:${relClr}22;color:${relClr};border-radius:10px;padding:0 5px;margin-left:auto;font-weight:700">⭐ ${s.reliability}</span>
+                </div>
+                <div style="font-size:20px;font-weight:900;color:${wrClr};line-height:1">${s.wr}%</div>
+                <div style="font-size:7px;color:var(--text3);margin-bottom:4px">Win rate · ${s.resolved} resolved</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:7px;margin-bottom:3px">
+                  <span style="color:var(--bull)">▲ Avg win: ${s.avgMoveWin>0?'+':''}${s.avgMoveWin}%</span>
+                  <span style="color:var(--bear)">✗ Fail: ${s.failRate}%</span>
+                </div>
+                ${s.volWR !== null ? `<div style="font-size:7px;color:var(--text3)">Vol-confirmed WR: <span style="color:var(--bull);font-weight:700">${s.volWR}%</span></div>` : ''}
+                ${recBar}
+                <!-- Mini visual bar -->
+                <div style="margin-top:5px;height:4px;border-radius:2px;background:var(--border);overflow:hidden">
+                  <div style="width:${s.wr}%;height:100%;background:${wrClr};border-radius:2px"></div>
+                </div>
+              </div>`;
+          }).join('');
+
+          /* ── Best level recommendation ── */
+          const ranked = levelKeys
+            .filter(lk => lvlStats[lk] && lvlStats[lk].resolved >= 3)
+            .sort((a,b) => lvlStats[b].reliability - lvlStats[a].reliability);
+
+          const bestBuy  = ranked.filter(lk => isBuyLevel(lk))[0];
+          const bestSell = ranked.filter(lk => !isBuyLevel(lk))[0];
+
+          const insight = (bestBuy || bestSell) ? `
+            <div style="margin-top:10px;padding:8px 10px;background:rgba(99,102,241,.08);border-radius:6px;border:1px solid rgba(99,102,241,.2);font-size:8px;font-family:var(--mono)">
+              <span style="color:var(--kite);font-weight:700">🎯 System Insight: </span>
+              ${bestBuy ? `<span style="color:var(--bull)">Most reliable BUY level: <strong>${bestBuy}</strong> (${lvlStats[bestBuy].wr}% WR · ⭐${lvlStats[bestBuy].reliability})</span>` : ''}
+              ${bestBuy && bestSell ? ' &nbsp;·&nbsp; ' : ''}
+              ${bestSell ? `<span style="color:var(--bear)">Most reliable SELL level: <strong>${bestSell}</strong> (${lvlStats[bestSell].wr}% WR · ⭐${lvlStats[bestSell].reliability})</span>` : ''}
+              ${bestBuy && lvlStats[bestBuy].volWR && lvlStats[bestBuy].volWR > lvlStats[bestBuy].wr + 5
+                ? `<div style="color:var(--amber);margin-top:3px">⚡ Volume confirmation adds ${lvlStats[bestBuy].volWR - lvlStats[bestBuy].wr}% to ${bestBuy} win rate — prioritise vol-confirmed signals</div>`
+                : ''}
+            </div>` : '';
+
+          /* ── Avg move by timeframe (3d/5d/10d) ── */
+          const res5 = ledger.filter(b => b.outcome_5d !== null && b.dir === 'BUY');
+          const avgByTime = res5.length ? `
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+              ${[['3d', 'chg_3d'],['5d','chg_5d'],['10d','chg_10d']].map(([label, key]) => {
+                const vals = ledger.filter(b => b[key] !== null && b[key] !== undefined && b.dir === 'BUY');
+                if (!vals.length) return '';
+                const avg = parseFloat((vals.reduce((s,b)=>s+(b[key]||0),0)/vals.length).toFixed(1));
+                const best = Math.max(...vals.map(b=>b[key]||0)).toFixed(1);
+                const clr  = avg > 0 ? 'var(--bull)' : 'var(--bear)';
+                return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:6px 10px;flex:1;text-align:center;font-family:var(--mono)">
+                  <div style="font-size:7px;color:var(--text3)">${label} avg move (BUY)</div>
+                  <div style="font-size:14px;font-weight:800;color:${clr}">${avg>0?'+':''}${avg}%</div>
+                  <div style="font-size:7px;color:var(--bull)">Best: +${best}%</div>
+                  <div style="font-size:7px;color:var(--text3)">${vals.length} samples</div>
+                </div>`;
+              }).join('')}
+            </div>` : '';
+
+          return cards + insight + avgByTime;
+        })()}
+      </div>
+
+      <!-- Original stats row -->
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
         ${statBox('▲ BUY Breakouts', buyStats, 'var(--bull)')}
         ${statBox('▼ SELL Breakdowns', sellStats, 'var(--bear)')}
@@ -10397,6 +10678,278 @@ function bt5mExport() {
   a.download = 'bt5m_profiles_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   toast('Profiles exported', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRE-BREAKOUT + BREAKOUT UNIFIED GRID ENGINE
+// ═══════════════════════════════════════════════════════════
+var _pboAlerted    = {}; /* debounce: sym_key → timestamp */
+var _pboLastRender = 0;
+const PBO_IMMINENT = 0.5;  /* 0–0.5% = red */
+const PBO_WATCH    = 1.0;  /* 0.5–1% = amber */
+const PBO_DEBOUNCE = 4 * 60 * 60 * 1000; /* 4h — re-alert if still near after 4h */
+
+/* ── Render pre-breakout tables ── */
+function renderPBOGrid() {
+  if (!Object.keys(breakoutLevels).length) return;
+
+  /* ── Pull learned reliability scores from ledger ── */
+  var _lvlReliability = {}; /* levelType → reliability score */
+  try {
+    idbGet(BRK_LEDGER_KEY).then(ledger => {
+      if (!ledger || !ledger.length) return;
+      ['20D High','20D Low','52W High','10D High','10D Low','Pivot R1','Pivot S1'].forEach(lk => {
+        const res = ledger.filter(b => b.level_type === lk && b.outcome_5d !== null);
+        if (!res.length) return;
+        const wins = res.filter(b => b.outcome_5d === 'strong' || b.outcome_5d === 'mild').length;
+        const wr   = Math.round(wins / res.length * 100);
+        const fail = res.filter(b => b.failed).length;
+        _lvlReliability[lk] = Math.round(wr * 0.6 + (100 - Math.round(fail/res.length*100)) * 0.4);
+      });
+    }).catch(()=>{});
+  } catch(e) {}
+
+  const buyRows  = [];
+  const sellRows = [];
+
+  Object.keys(breakoutLevels).forEach(sym => {
+    const lvl = breakoutLevels[sym];
+    const ltp = zdPrices[sym] || zdPrices['NSE:'+sym];
+    if (!ltp) return;
+
+    const isSig = lvl.is_signal;
+    const pb    = lvl.pb_score || 0;
+    const sig   = allSignals.find(s => s.symbol === sym);
+    const sigLabel = sig ? sig.signal : '';
+
+    /* Priority badge */
+    const badge = isSig
+      ? `<span style="font-size:6px;background:rgba(5,150,105,.2);color:var(--bull);border-radius:2px;padding:0 3px">SIG</span>`
+      : pb >= 60
+      ? `<span style="font-size:6px;background:rgba(99,102,241,.2);color:var(--kite);border-radius:2px;padding:0 3px">AU</span>`
+      : '';
+
+    /* Check all levels for BUY pre-breakout (price approaching from below) */
+    const buyLevels = [
+      { price: lvl.hi20,  label: '20D High', priority: 2 },
+      { price: lvl.hi52,  label: '52W High', priority: 1 },
+      { price: lvl.hi10,  label: '10D High', priority: 3 },
+      { price: lvl.pivR1, label: 'Pivot R1', priority: 4 },
+    ].filter(l => l.price && l.price > ltp);
+
+    buyLevels.forEach(l => {
+      const awayPct = parseFloat(((l.price - ltp) / l.price * 100).toFixed(2));
+      if (awayPct > PBO_WATCH) return; /* outside watch zone */
+      const isImminent = awayPct <= PBO_IMMINENT;
+
+      /* Alert on first entry into imminent zone */
+      const alertKey = sym + '_pbo_buy_' + l.label;
+      const now = Date.now();
+      if (isImminent && (!_pboAlerted[alertKey] || now - _pboAlerted[alertKey] > PBO_DEBOUNCE)) {
+        _pboAlerted[alertKey] = now;
+        toast(`🔴 IMMINENT: ${sym} ${awayPct}% from ${l.label}`, 'ok');
+        playBreakoutSound && playBreakoutSound(true);
+      }
+
+      const rowBg   = isImminent
+        ? 'background:rgba(239,68,68,.08);border-left:3px solid var(--bear)'
+        : 'background:rgba(217,119,6,.06);border-left:3px solid var(--amber)';
+      const awayClr = isImminent ? 'var(--bear)' : 'var(--amber)';
+      const urgency = isImminent ? '🔴' : '🟡';
+
+      buyRows.push({
+        priority: (isSig ? 0 : pb >= 60 ? 1 : 2) * 10 + l.priority,
+        awayPct,
+        reliability: _lvlReliability[l.label] || 50,
+        html: `<tr style="${rowBg}">
+          <td style="padding:3px 6px;color:var(--text3)">${urgency}</td>
+          <td style="padding:3px 6px;font-weight:700;color:var(--bright);white-space:nowrap">
+            ${sym} ${badge}
+            ${sigLabel ? `<span style="font-size:6px;color:var(--bull)">${sigLabel}</span>` : ''}
+          </td>
+          <td style="padding:3px 6px;text-align:center;font-weight:700;color:var(--bright)">₹${ltp.toFixed(2)}</td>
+          <td style="padding:3px 6px;text-align:center;color:var(--text2)">₹${l.price.toFixed(2)}</td>
+          <td style="padding:3px 6px;text-align:center">
+            <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:rgba(99,102,241,.15);color:var(--kite)">${l.label}</span>
+            ${_lvlReliability[l.label] ? `<div style="font-size:6px;color:var(--text3)">⭐${_lvlReliability[l.label]}</div>` : ''}
+          </td>
+          <td style="padding:3px 6px;text-align:center;font-weight:800;color:${awayClr}">${awayPct}%</td>
+          <td style="padding:3px 6px;text-align:center">
+            <button onclick="showOrderModal('${sym}','BUY',${ltp},0,0)"
+              style="font-size:7px;background:var(--bull);color:#fff;border:none;border-radius:3px;padding:2px 7px;cursor:pointer;font-weight:700">▲ BUY</button>
+          </td>
+        </tr>`
+      });
+    });
+
+    /* Check all levels for SELL pre-breakout (price approaching from above) */
+    const sellLevels = [
+      { price: lvl.lo20,  label: '20D Low',  priority: 2 },
+      { price: lvl.lo10,  label: '10D Low',  priority: 3 },
+      { price: lvl.pivS1, label: 'Pivot S1', priority: 4 },
+    ].filter(l => l.price && l.price < ltp);
+
+    sellLevels.forEach(l => {
+      const awayPct = parseFloat(((ltp - l.price) / ltp * 100).toFixed(2));
+      if (awayPct > PBO_WATCH) return;
+      const isImminent = awayPct <= PBO_IMMINENT;
+
+      const alertKey = sym + '_pbo_sell_' + l.label;
+      const now = Date.now();
+      if (isImminent && (!_pboAlerted[alertKey] || now - _pboAlerted[alertKey] > PBO_DEBOUNCE)) {
+        _pboAlerted[alertKey] = now;
+        toast(`🔴 IMMINENT BREAKDOWN: ${sym} ${awayPct}% from ${l.label}`, 'err');
+        playBreakoutSound && playBreakoutSound(false);
+      }
+
+      const rowBg   = isImminent
+        ? 'background:rgba(239,68,68,.08);border-left:3px solid var(--bear)'
+        : 'background:rgba(217,119,6,.06);border-left:3px solid var(--amber)';
+      const awayClr = isImminent ? 'var(--bear)' : 'var(--amber)';
+      const urgency = isImminent ? '🔴' : '🟡';
+
+      sellRows.push({
+        priority: (isSig ? 0 : pb >= 60 ? 1 : 2) * 10 + l.priority,
+        awayPct,
+        reliability: _lvlReliability[l.label] || 50,
+        html: `<tr style="${rowBg}">
+          <td style="padding:3px 6px;color:var(--text3)">${urgency}</td>
+          <td style="padding:3px 6px;font-weight:700;color:var(--bright);white-space:nowrap">
+            ${sym} ${badge}
+            ${sigLabel ? `<span style="font-size:6px;color:var(--bear)">${sigLabel}</span>` : ''}
+          </td>
+          <td style="padding:3px 6px;text-align:center;font-weight:700;color:var(--bright)">₹${ltp.toFixed(2)}</td>
+          <td style="padding:3px 6px;text-align:center;color:var(--text2)">₹${l.price.toFixed(2)}</td>
+          <td style="padding:3px 6px;text-align:center">
+            <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:rgba(239,68,68,.15);color:var(--bear)">${l.label}</span>
+            ${_lvlReliability[l.label] ? `<div style="font-size:6px;color:var(--text3)">⭐${_lvlReliability[l.label]}</div>` : ''}
+          </td>
+          <td style="padding:3px 6px;text-align:center;font-weight:800;color:${awayClr}">${awayPct}%</td>
+          <td style="padding:3px 6px;text-align:center">
+            <button onclick="showOrderModal('${sym}','SELL',${ltp},0,0)"
+              style="font-size:7px;background:var(--bear);color:#fff;border:none;border-radius:3px;padding:2px 7px;cursor:pointer;font-weight:700">▼ SELL</button>
+          </td>
+        </tr>`
+      });
+    });
+  });
+
+  /* Sort: signal stocks first, then by reliability × proximity */
+  buyRows.sort((a,b)  => a.priority !== b.priority ? a.priority - b.priority
+    : (a.awayPct / (a.reliability||50)) - (b.awayPct / (b.reliability||50)));
+  sellRows.sort((a,b) => a.priority !== b.priority ? a.priority - b.priority
+    : (a.awayPct / (a.reliability||50)) - (b.awayPct / (b.reliability||50)));
+
+  const buyBody  = document.getElementById('pboBuyBody');
+  const sellBody = document.getElementById('pboSellBody');
+  const buyCount  = document.getElementById('pboBuyCount');
+  const sellCount = document.getElementById('pboSellCount');
+
+  if (buyBody) buyBody.innerHTML = buyRows.length
+    ? buyRows.map(r => r.html).join('')
+    : '<tr><td colspan="7" style="padding:10px;text-align:center;color:var(--text3);font-size:8px">No stocks within 1% of resistance</td></tr>';
+
+  if (sellBody) sellBody.innerHTML = sellRows.length
+    ? sellRows.map(r => r.html).join('')
+    : '<tr><td colspan="7" style="padding:10px;text-align:center;color:var(--text3);font-size:8px">No stocks within 1% of support</td></tr>';
+
+  if (buyCount)  buyCount.textContent  = buyRows.length  ? `(${buyRows.length})` : '';
+  if (sellCount) sellCount.textContent = sellRows.length ? `(${sellRows.length})` : '';
+
+  /* Show the grid */
+  const grid = document.getElementById('pboBrkGrid');
+  if (grid) grid.style.display = 'grid';
+}
+
+/* ── Render breakout BUY/SELL tables in the new grid ── */
+function renderBrkGrid() {
+  const buys  = liveBreakouts.filter(b => b.dir === 'BUY').slice().sort((a,b) => (b.ts||0)-(a.ts||0));
+  const sells = liveBreakouts.filter(b => b.dir === 'SELL').slice().sort((a,b) => (b.ts||0)-(a.ts||0));
+
+  function brkRow(b, i) {
+    const ltp      = zdPrices[b.sym] || zdPrices['NSE:'+b.sym] || b.price;
+    const drift    = parseFloat(((ltp - b.price)/b.price*100).toFixed(2));
+    const isBuy    = b.dir === 'BUY';
+    const accent   = isBuy ? 'var(--bull)' : 'var(--bear)';
+    const driftClr = drift >= 0 ? 'var(--bull)' : 'var(--bear)';
+    const isSig    = b.is_signal;
+    const badge    = isSig
+      ? `<span style="font-size:6px;background:rgba(5,150,105,.2);color:var(--bull);border-radius:2px;padding:0 3px">SIG</span>`
+      : '';
+    const timeStr  = b.datetime || b.date || '—';
+
+    /* Live status */
+    const distPct = isBuy
+      ? (ltp - b.level) / b.level * 100
+      : (b.level - ltp) / b.level * 100;
+
+    const isFailed  = b.failed || b.status === 'failed';
+    const isWeak    = !isFailed && distPct < 0.5;
+    const isHolding = !isFailed && !isWeak;
+
+    const statusCell = isFailed
+      ? `<span style="font-size:7px;font-weight:800;color:var(--bear)">❌ FAILED</span><br><span style="font-size:6px;color:var(--text3)">${b.failTime||''}</span>`
+      : isWeak
+      ? `<span style="font-size:7px;font-weight:800;color:var(--amber)">⚠ WEAK</span><br><span style="font-size:6px;color:var(--amber)">${distPct.toFixed(1)}% above</span>`
+      : `<span style="font-size:7px;font-weight:700;color:var(--bull)">✅ +${distPct.toFixed(1)}%</span>`;
+
+    const rowBg = isFailed
+      ? 'background:rgba(239,68,68,.1);border-left:3px solid var(--bear)'
+      : isWeak
+      ? 'background:rgba(217,119,6,.08);border-left:3px solid var(--amber)'
+      : 'border-left:3px solid var(--bull)';
+
+    const symStyle = isFailed
+      ? 'font-weight:700;color:var(--text3);text-decoration:line-through'
+      : 'font-weight:700;color:var(--bright)';
+
+    return `<tr style="border-bottom:1px solid var(--border)22;${rowBg}">
+      <td style="padding:3px 6px;color:var(--text3)">${i+1}</td>
+      <td style="padding:3px 6px;white-space:nowrap">
+        <span style="${symStyle}">${b.sym}</span> ${badge}
+      </td>
+      <td style="padding:3px 6px;text-align:center;color:var(--text2)">₹${b.price.toFixed(2)}</td>
+      <td style="padding:3px 6px;text-align:center;font-weight:700;color:${isFailed?'var(--bear)':accent}">
+        ₹${ltp.toFixed(2)}
+        <span style="font-size:7px;color:${driftClr}">${drift>=0?'+':''}${drift}%</span>
+      </td>
+      <td style="padding:3px 6px;text-align:center;color:var(--text2)">₹${(b.level||0).toFixed(2)}</td>
+      <td style="padding:3px 6px;text-align:center">
+        <span style="font-size:7px;padding:1px 4px;border-radius:3px;background:rgba(99,102,241,.15);color:var(--kite)">${b.level_type||'—'}</span>
+      </td>
+      <td style="padding:3px 6px;text-align:center;font-weight:700;color:${isFailed?'var(--bear)':accent}">${isBuy?'▲':'▼'}${b.pct}%</td>
+      <td style="padding:3px 6px;text-align:center;color:var(--text2);font-size:7px;font-weight:600">${timeStr}</td>
+      <td style="padding:3px 6px;text-align:center">${statusCell}</td>
+      <td style="padding:3px 6px;text-align:center;white-space:nowrap">
+        ${!isFailed ? `<button onclick="showOrderModal('${b.sym}','${b.dir}',${ltp},0,0)"
+          style="font-size:7px;background:${accent};color:#fff;border:none;border-radius:3px;padding:2px 6px;cursor:pointer;font-weight:700">
+          ${isBuy?'▲ BUY':'▼ SELL'}
+        </button>` : `<span style="font-size:7px;color:var(--text3)">—</span>`}
+      </td>
+    </tr>`;
+  }
+
+  const buyBody2  = document.getElementById('brkBuyBody2');
+  const sellBody2 = document.getElementById('brkSellBody2');
+  const buyCount2  = document.getElementById('brkBuyCount2');
+  const sellCount2 = document.getElementById('brkSellCount2');
+
+  if (buyBody2) buyBody2.innerHTML = buys.length
+    ? buys.map((b,i) => brkRow(b,i)).join('')
+    : '<tr><td colspan="9" style="padding:10px;text-align:center;color:var(--text3);font-size:8px">No buy breakouts yet today</td></tr>';
+
+  if (sellBody2) sellBody2.innerHTML = sells.length
+    ? sells.map((b,i) => brkRow(b,i)).join('')
+    : '<tr><td colspan="9" style="padding:10px;text-align:center;color:var(--text3);font-size:8px">No breakdowns yet today</td></tr>';
+
+  if (buyCount2)  buyCount2.textContent  = buys.length  ? `(${buys.length})`  : '';
+  if (sellCount2) sellCount2.textContent = sells.length ? `(${sells.length})` : '';
+}
+
+/* ── Master refresh — called by existing Kite tick ── */
+function refreshPBOBrkGrid() {
+  renderPBOGrid();
+  renderBrkGrid();
 }
 
 // ═══════════════════════════════════════════════════════════
