@@ -10753,14 +10753,18 @@ function build1pcSectorRanks() {
 }
 
 function score1pcReady(sym) {
-  const ltp = zdPrices[sym] || zdPrices['NSE:'+sym];
-  if (!ltp || ltp <= 0) return null;
-
   const lvl  = breakoutLevels[sym];
   const sig  = allSignals.find(s => s.symbol === sym);
   const atr  = getATRViability(sym);
   const d    = allStockData[sym];
   if (!lvl && !sig) return null;
+
+  /* Live Kite price → CSV last close fallback → signal CMP fallback */
+  const ltpLive = zdPrices[sym] || zdPrices['NSE:'+sym];
+  const ltpCsv  = d && d.rows && d.rows.length ? d.rows[d.rows.length-1].cl : null;
+  const ltpSig  = sig ? sig.cmp : null;
+  const ltp     = ltpLive || ltpCsv || ltpSig;
+  if (!ltp || ltp <= 0) return null;
 
   let score = 0;
   const factors = {};
@@ -10887,13 +10891,24 @@ function render1pcReady() {
   const body    = document.getElementById('onepcBody');
   const countEl = document.getElementById('onepcCount');
   if (!body) return;
-  if (!zdLiveMode || !Object.keys(breakoutLevels).length) return;
+
+  /* Need either breakoutLevels or allSignals to have data */
+  const hasLevels  = Object.keys(breakoutLevels).length > 0;
+  const hasSignals = allSignals && allSignals.length > 0;
+  if (!hasLevels && !hasSignals) {
+    body.innerHTML = '<tr><td colspan="11" style="padding:14px;text-align:center;color:var(--text3);font-size:8px">Load CSV data first — updates every 30s once Kite connects</td></tr>';
+    return;
+  }
 
   build1pcSectorRanks();
 
-  /* Score all symbols in breakoutLevels */
+  /* Score all symbols — from breakoutLevels + allSignals combined */
+  const allSyms = new Set([
+    ...Object.keys(breakoutLevels),
+    ...(allSignals || []).filter(s => s.signal && s.signal.startsWith('B')).map(s => s.symbol)
+  ]);
   const results = [];
-  Object.keys(breakoutLevels).forEach(sym => {
+  allSyms.forEach(sym => {
     const r = score1pcReady(sym);
     if (r && r.score >= 50) results.push(r);
   });
@@ -10976,12 +10991,7 @@ function render1pcReady() {
   }).join('');
 }
 
-/* Wire into master refresh */
-const _origRefreshPBOBrkGrid = refreshPBOBrkGrid;
-function refreshPBOBrkGrid() {
-  render1pcReady();
-  _origRefreshPBOBrkGrid();
-}
+/* render1pcReady is called directly from refreshPBOBrkGrid below */
 
 // ═══════════════════════════════════════════════════════════
 // ATR VIABILITY FILTER — can this stock give 1% in ≤10 days?
@@ -11539,6 +11549,7 @@ function renderBrkGrid() {
 
 /* ── Master refresh — called by existing Kite tick ── */
 function refreshPBOBrkGrid() {
+  render1pcReady();
   renderPBOGrid();
   renderBrkGrid();
 }
